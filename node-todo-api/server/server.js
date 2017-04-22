@@ -14,11 +14,9 @@ app.post('/todos', (req,res) => {
     text: req.body.text
   }).save()
     .then((doc) => {
-      console.log(JSON.stringify(doc, undefined, 2));
-      res.status(201).send(doc);
+      res.send(doc);
     })
     .catch((err) => {
-      console.log(err);
       res.status(400).send(err);
     });
 });
@@ -26,3 +24,7 @@ app.post('/todos', (req,res) => {
 app.listen(3000, () => {
   console.log('Started server on port: 3000');
 })
+
+module.exports = {
+  app
+};
