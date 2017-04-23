@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/ToDoApp');
+
+var dbURI = process.env.MONGODB_URI || 'mongodb://localhost/ToDoApp';
+
+mongoose.connect(dbURI);
 
 module.exports = {
   mongoose
