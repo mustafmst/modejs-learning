@@ -45,7 +45,7 @@ app.get('/todos/:id', (req,res) => {
     .then((todo) => {
       if(!todo){
         return res.status(404).send({
-          message: `There is no todo with id: ${req.params.id}`
+          message: `There is no todo with id: ${id}`
         });
       }
       res.send({todo});
@@ -54,6 +54,25 @@ app.get('/todos/:id', (req,res) => {
       return res.status(400).send({});
     });
 });
+
+app.delete('/todos/:id', (req,res) => {
+  var id = req.params.id;
+
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send({message: 'ID is invalid'});
+  }
+
+  Todo.findByIdAndRemove(id)
+    .then((todo) => {
+      if(!todo){
+        return res.status(404).send({message:`There is no todo with id: ${id}`});
+      }
+      res.send(todo);
+    })
+    .catch((err) => {
+      res.status(400).send();
+    });
+})
 
 app.listen(port, () => {
   //console.log('Started server on port: 3000');
