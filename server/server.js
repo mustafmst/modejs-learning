@@ -1,3 +1,13 @@
+var env = process.env.NODE_ENV || 'development';
+
+if(env ==='development'){
+  process.env.PORT = 3000;
+  process.env.MONGODB_URI = 'mongodb://localhost/ToDoApp';
+} else if(env === 'test'){
+  process.env.PORT = 3000;
+  process.env.MONGODB_URI = 'mongodb://localhost/ToDoTest';
+}
+
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,16 +17,19 @@ var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 var app = express();
 
 app.use(bodyParser.json());
 
-//app.use((req,res,next) => {
-//  console.log(JSON.stringify(req.body, undefined, 2));
-//  next();
-//});
+app.use((req,res,next) => {
+  if(env === 'test')
+  {
+    console.log(JSON.stringify(req.body, undefined, 2));
+  }
+  next();
+});
 
 app.post('/todos', (req,res) => {
   var todo = new Todo({
@@ -108,7 +121,10 @@ app.patch('/todos/:id', (req, res) => {
 });
 
 app.listen(port, () => {
-  //console.log('Started server on port: ' + port);
+  if(env != 'test'){
+    console.log('env ====> ' + env);
+    console.log('Started server on port: ' + port);
+  }
 })
 
 module.exports = {
