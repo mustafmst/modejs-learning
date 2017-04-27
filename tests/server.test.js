@@ -1,3 +1,4 @@
+describe('Server tests', () => {
 const request = require('supertest');
 const expect = require('expect');
 const {ObjectID} = require('mongodb');
@@ -11,6 +12,10 @@ const todos = [{
 },{
   text: 'second todo',
   _id: new ObjectID()
+},{
+  _id: new ObjectID(),
+  text: "third todo",
+  completed: true
 }];
 
 beforeEach((done) => {
@@ -58,7 +63,7 @@ describe('POST /todos', () => {
 
         Todo.find()
           .then((todos) => {
-            expect(todos.length).toBe(2);
+            expect(todos.length).toBe(todos.length);
             done();
           })
           .catch((err) => done(err));
@@ -73,7 +78,7 @@ describe('GET /todos', () => {
       .get('/todos')
       .expect(200)
       .expect((res) => {
-        expect(res.body.todos.length).toBe(2)
+        expect(res.body.todos.length).toBe(todos.length)
       })
       .end(done);
   });
@@ -205,4 +210,45 @@ describe('PATCH /todos/:id', () => {
       .expect(404)
       .end(done);
   });
+  it('should update completedAt field with completed set to true', (done) => {
+    var id = todos[1]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({completed: true})
+      .expect(200)
+      .end((err) => {
+        if(err){
+          done(err);
+        }
+        Todo.findById(id)
+          .then((todo) => {
+            expect(todo.completed).toBe(true);
+            expect(todo.completedAt).toNotBe(null).toBeA('number');
+            done();
+          })
+          .catch((e) => done(e));
+      });
+  });
+  it('should clear completedAt when todo is not completed',(done) => {
+    var id = todos[2]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${id}`)
+      .send({completed: false})
+      .expect(200)
+      .end((err) => {
+        if(err){
+          done(err);
+        }
+        Todo.findById(id)
+          .then((todo) => {
+            expect(todo.completed).toBe(false);
+            expect(todo.completedAt).toBe(null);
+            done();
+          })
+          .catch((e) => done(e));
+      });
+  });
+});
 });
