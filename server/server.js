@@ -1,13 +1,4 @@
-var env = process.env.NODE_ENV || 'development';
-
-if(env ==='development'){
-  process.env.PORT = 3000;
-  process.env.MONGODB_URI = 'mongodb://localhost/ToDoApp';
-} else if(env === 'test'){
-  process.env.PORT = 3000;
-  process.env.MONGODB_URI = 'mongodb://localhost/ToDoTest';
-}
-
+const env = require('./config/config').env;
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -125,7 +116,7 @@ app.listen(port, () => {
     console.log('env ====> ' + env);
     console.log('Started server on port: ' + port);
   }
-})
+});
 
 module.exports = {
   app
