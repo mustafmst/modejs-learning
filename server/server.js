@@ -1,5 +1,6 @@
 const env = require('./config/config').env;
 const _ = require('lodash');
+const morgan = require('morgan');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -12,15 +13,19 @@ const port = process.env.PORT;
 
 var app = express();
 
-app.use(bodyParser.json());
 
-app.use((req,res,next) => {
-  if(env === 'test')
-  {
-    console.log(JSON.stringify(req.body, undefined, 2));
-  }
-  next();
-});
+app.use(bodyParser.json());
+if(env === 'development'){
+  app.use(morgan('dev'));
+}
+
+//app.use((req,res,next) => {
+//  if(env === 'development')
+//  {
+//    console.log(JSON.stringify(req.body, undefined, 2));
+//  }
+//  next();
+//});
 
 app.post('/todos', (req,res) => {
   var todo = new Todo({
@@ -105,6 +110,22 @@ app.patch('/todos/:id', (req, res) => {
         return res.status(404).send();
       }
       res.send({todo});
+    })
+    .catch((e) => {
+      res.status(400).send(e);
+    });
+});
+
+app.post('/users', (req, res) => {
+  var body = _.pick(req.body,["email", "password"]);
+  var user = new User({
+    email: body.email,
+    password: body.password
+  });
+
+  user.save()
+    .then((user) => {
+      res.send({user});
     })
     .catch((e) => {
       res.status(400).send(e);
