@@ -4,10 +4,12 @@ const morgan = require('morgan');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
+var {authenticate} = require('./middleware/authenticate');
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+
 
 const port = process.env.PORT;
 
@@ -18,14 +20,6 @@ app.use(bodyParser.json());
 if(env === 'development'){
   app.use(morgan('dev'));
 }
-
-//app.use((req,res,next) => {
-//  if(env === 'development')
-//  {
-//    console.log(JSON.stringify(req.body, undefined, 2));
-//  }
-//  next();
-//});
 
 app.post('/todos', (req,res) => {
   var todo = new Todo({
@@ -133,6 +127,10 @@ app.post('/users', (req, res) => {
     .catch((e) => {
       res.status(400).send(e);
     });
+});
+
+app.get('/users/me', authenticate, (req,res) => {
+  res.send(req.user);
 });
 
 app.listen(port, () => {
