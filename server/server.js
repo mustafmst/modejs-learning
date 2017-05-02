@@ -21,9 +21,10 @@ if(env === 'development'){
   app.use(morgan('dev'));
 }
 
-app.post('/todos', (req,res) => {
+app.post('/todos', authenticate, (req,res) => {
   var todo = new Todo({
-    text: req.body.text
+    text: req.body.text,
+    _creator: req.user._id
   }).save()
     .then((doc) => {
       res.send(doc);
@@ -33,8 +34,10 @@ app.post('/todos', (req,res) => {
     });
 });
 
-app.get('/todos', (req,res) => {
-  Todo.find()
+app.get('/todos', authenticate, (req,res) => {
+  Todo.find({
+    _creator: req.user._id
+  })
     .then((todos) => {
       res.send({todos});
     })
