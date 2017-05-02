@@ -12,7 +12,7 @@ var UserSchema = new mongoose.Schema({
       minlength: 1,
       unique: true,
       validate: {
-        validator: validator.isEmail,
+        validator: value => validator.isEmail(value),
         message: '{value} is not a valid email'
       }
   },
@@ -75,8 +75,6 @@ UserSchema.pre('save', function(next){
   if(user.isModified('password')){
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt, (err, hash) => {
-        if(err) return Promise.reject();
-
         user.password = hash;
         next();
       });
