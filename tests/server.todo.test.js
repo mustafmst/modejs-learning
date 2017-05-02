@@ -77,6 +77,7 @@ describe('GET /todos/:id', () => {
   it('should return todo doc when valid id is provided', (done) => {
     request(app)
       .get(`/todos/${todos[0]._id.toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
           expect(res.body.todo.text).toBe(todos[0].text);
@@ -88,6 +89,7 @@ describe('GET /todos/:id', () => {
     var notExistingId = new ObjectID().toHexString();
     request(app)
       .get(`/todos/${notExistingId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .expect((res) => {
         expect(res.body.message).toBe(`There is no todo with id: ${notExistingId}`);
@@ -99,6 +101,7 @@ describe('GET /todos/:id', () => {
     var invalidId = '111';
     request(app)
       .get(`/todos/${invalidId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .expect((res) => {
         expect(res.body.message).toBe('Id is invalid');
@@ -113,6 +116,7 @@ describe('DELETE /todos/:id', () => {
 
     request(app)
       .delete(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.todo._id).toBe(id);
@@ -138,6 +142,7 @@ describe('DELETE /todos/:id', () => {
 
     request(app)
       .delete(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -147,6 +152,7 @@ describe('DELETE /todos/:id', () => {
 
     request(app)
       .delete(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -159,6 +165,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({text: newText})
       .expect(200)
       .expect((res) => {
@@ -185,6 +192,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({text: newText})
       .expect(404)
       .end(done);
@@ -195,6 +203,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({text: newText})
       .expect(404)
       .end(done);
@@ -204,6 +213,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({completed: true})
       .expect(200)
       .end((err) => {
@@ -224,6 +234,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({completed: false})
       .expect(200)
       .end((err) => {
@@ -327,7 +338,7 @@ describe('POST /users/login', () => {
 
         User.findById(users[1]._id)
           .then((user) => {
-            expect(user.tokens[0]).toInclude({
+            expect(user.tokens[1]).toInclude({
               access: 'auth',
               token: res.headers['x-auth']
             });
