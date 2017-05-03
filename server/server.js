@@ -17,9 +17,19 @@ app.use(morgan('dev'));
 io.on('connection', (socket) => {
   console.log('New user connected');
 
+  socket.emit('newMessage', {
+    from: "test",
+    text: "test",
+    createdAt: 123
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected');
-  })
+  });
+
+  socket.on('createMessage', (message) => {
+    console.log(JSON.stringify(message,undefined,2));
+  });
 });
 
 server.listen(port, () => {
