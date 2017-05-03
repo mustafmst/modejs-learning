@@ -4,10 +4,16 @@
   <meta charset="utf-8" />
 </head>
 <body>
-  <p>
-    Chat app!
-  </p>
+<h1>Chat App</h1>
 
+  <ul id="messages"></ul>
+
+  <form id="message-form">
+    <input name="message" type="text" placeholder="Write your message..." />
+    <button>Send</button>
+  </form>
+
+  <script src="/libs/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/index.js"></script>
 </body>
