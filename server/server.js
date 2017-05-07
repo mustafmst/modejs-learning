@@ -4,7 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, '/../public');
 const jqueryPath = path.join(__dirname, '/../node_modules/jquery/dist');
@@ -14,7 +14,6 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 app.use(express.static(publicPath));
-console.log(jqueryPath);
 app.use('/libs', express.static(jqueryPath));
 app.use(morgan('dev'));
 
@@ -30,7 +29,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('createLocationMessage', (coords) => {
-    io.emit('newMessage', generateMessage('Admin', `lat: ${coords.latitude}, long: ${coords.longitude}`));
+    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
   });
 
   socket.on('createMessage', (message, callback) => {
