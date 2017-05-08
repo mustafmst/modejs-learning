@@ -39,6 +39,20 @@
     </li>
   </script>
 
+  <script id="location-message-template" type="text/template">
+  <li class="message">
+    <div class="message__title">
+      <h4>{{from}}</h4>
+      <span>{{createdAt}}</span>
+    </div>
+    <div class="message__body">
+      <p>
+        <a href="{{text}}" target="_blank">My Location</a>
+      </p>
+    </div>
+  </li>
+  </script>
+
   <script src="/libs/jquery.min.js"></script>
   <script src="/libs/moment.js"></script>
   <script src="/libs/mustache.js"></script>
