@@ -26,12 +26,13 @@ io.on('connection', (socket) => {
       callback('Name and room name are required');
     }
 
+    socket.join(params.room);
+
+    socket.emit('newMessage', generateMessage("Admin", "Welcome to the chat app"));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage("Admin", `${params.name} has joined`));
+
     callback();
   });
-
-  socket.emit('newMessage', generateMessage("Admin", "Welcome to the chat app"));
-
-  socket.broadcast.emit('newMessage', generateMessage("Admin", "New user has connected"));
 
   socket.on('disconnect', () => {
     console.log('User disconnected');
