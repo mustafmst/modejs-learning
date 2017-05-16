@@ -60,7 +60,7 @@ socket.on('newLocationMessage', function(message) {
   var formattedTime = moment(message.createdAt).format('H:mm');
   var template = jQuery('#location-message-template').html();
   var html = Mustache.render(template, {
-    text: message.text,
+    text: message.url,
     from: message.from,
     createdAt: formattedTime
   });
@@ -75,7 +75,6 @@ jQuery('#message-form').on('submit', function(e) {
   var messageTextBox = jQuery('[name=message]');
   var sendButton = jQuery('#send-message');
   socket.emit('createMessage', {
-    from: 'User',
     text: messageTextBox.val()
   }, function() {
     messageTextBox.val('');
@@ -97,7 +96,6 @@ locationButton.on('click', function() {
   navigator.geolocation.getCurrentPosition(function(position) {
     locationButton.removeAttr('disabled').text('Send Location');
     socket.emit('createLocationMessage', {
-      from: 'User',
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     });
