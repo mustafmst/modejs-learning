@@ -25,16 +25,18 @@ class Users {
     return user;
   }
 
-  removeUser(id) {
-    this.users = this.users.filter((user) => {
-      return user.id != id;
-    });
-  }
-
   getUser(id) {
     return this.users.filter((user) => {
       return user.id === id;
     })[0];
+  }
+
+  removeUser(id) {
+    var user = this.getUser(id);
+    this.users = this.users.filter((user) => {
+      return user.id != id;
+    });
+    return user;
   }
 
   getUserList(room){

@@ -24,13 +24,23 @@ socket.on('connect', function() {
       alert(err);
       window.location.href = '/'
     } else{
-      
+
     }
   });
 });
 
 socket.on('disconnect', function() {
   console.log('Disconnected from server');
+});
+
+socket.on('updateUserList', function(users){
+  var ul = jQuery('<ul></ul>');
+
+  users.forEach(function (user){
+    ul.append(jQuery('<li></li>').text(user));
+  });
+
+  jQuery('#users').html(ul);
 });
 
 socket.on('newMessage', function(message) {
